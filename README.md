@@ -4,7 +4,7 @@ Dork for secrets in code, commits and repositories using wordlist. Just add acce
 
 ## Features
 1. Search in all places such as code, commits and repositories
-2. Threaded, nice UI and easy to use
+2. Threaded, nice colored display and easy to use
 
 ## Usage
 ```
