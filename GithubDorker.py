@@ -57,9 +57,6 @@ def main():
     #    executor.map(search_all, input_wordlist)
 
 main()
-
-
-
 # qg = xg.return_query(['HACKED'], user='machinexa2')
 # for q in qg:
         # xg.search_orchestrator(q)
