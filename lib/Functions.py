@@ -1,10 +1,10 @@
 from termcolor import colored
 from lib.Globals import ColorObj
+
 def banner():
     from pyfiglet import print_figlet as puff
-    puff('CRLF Injector', font='larry3d', colors='BLUE')
-    print(colored('A smart CRLF Injector, which can inject CRLF when given either subdomain or crawler file', color='red', attrs=['bold']))
-    print(colored('It intelligently fuzzes in parameters and path', color='red', attrs=['bold']))
+    puff('Github Dorker', font='larry3d', colors='BLUE')
+    print(colored('Github dorker that searches code, repositories and commit for sensitive data!', color='red', attrs=['bold']))
 
 def starter(argv):
     if argv.banner:

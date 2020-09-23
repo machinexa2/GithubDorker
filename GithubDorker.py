@@ -8,11 +8,6 @@ from lib.Functions import starter
 from lib.GithubDorker import GithubDork
 from lib.PathFunctions import PathFunction
 
-def banner():
-        from pyfiglet import print_figlet as puff
-        puff('Github Dorker', font='larry3d', colors='BLUE')
-        print(colored('Github dorker that searches code, repositories and commit for sensitive data!', color='red', attrs=['bold']))
-
 parser = ArgumentParser(description=colored('Automatic Github Dorker', color='yellow'), epilog=colored("Happy Bug Hunting", color='yellow'))
 group = parser.add_mutually_exclusive_group()
 
