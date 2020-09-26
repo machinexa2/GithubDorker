@@ -38,14 +38,14 @@ def write_output_directory(filepath, filename, towrite):
     f = open(FPathApp.slasher(filepath) + filename + ".github", 'a')
     for data in towrite:
         for d in data:
-            f.write(d + '\n')
+            f.write(d)
     f.close()
 
 def write_output(filename, towrite):
     f = open(filename, 'a')
     for data in towrite:
         for d in data:
-            f.write(d + '\n')
+            f.write(d)
     f.close()
 
 def shannon_entropy(data, iterator):

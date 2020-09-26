@@ -94,21 +94,22 @@ class GithubDork:
                         temp_x = "File: {}\n".format(colored(repo_file, color='cyan'))
                         repo_temp_list.append(temp_x.lstrip(' '))
                         line_searched = False
-                        for repo_file_line in repo_file_lines:
+                        for repoline in repo_file_lines:
                             for regex in search_regex:
-                                if search(regex, repo_file_line):
-                                    temp_x = "{:<40} <--- File from repo regex \n".format(colored(repo_file_line, color='red'))
+                                if search(regex, repoline):
+                                    temp_x = f"{colored(repoline, color='red')} "
+                                    temp_x += "<--- File from repo regex \n".rjust(150-len(temp_x))
                                     repo_temp_list.append(temp_x.lstrip(' '))
                                     line_searched = True
                             if line_searched:
                                 line_searched = False
                                 continue
-                            for repo_file_word in repo_file_line.split(' '):
-                                if shannon_entropy(repo_file_word, base64char) >= float(4):
-                                    temp_x = "{:<40} <--- From Repo entropy! \n".format(colored(repo_file_word, color='red'))
+                            for repoword in repoline.split(' '):
+                                temp_x = f"{colored(repoword, color='red')} "
+                                temp_x += "<--- From Repo entropy! \n".rjust(150-len(temp_x))
+                                if shannon_entropy(repoword, base64char) >= float(4.5):
                                     repo_temp_list.append(temp_x.lstrip(' '))
-                                if shannon_entropy(repo_file_word, hexchar) >= float(3):
-                                    temp_x = "{:<40} <--- From Repo entropy! \n".format(colored(repo_file_word, color='red'))
+                                if shannon_entropy(repoword, hexchar) >= float(4.1):
                                     repo_temp_list.append(temp_x.lstrip(' '))
         self.orchestra['repo'] = False
         return repo_temp_list
@@ -128,18 +129,19 @@ class GithubDork:
                 for code_line in code:
                     for regex in search_regex:
                         if search(regex, code_line):
-                            temp_x = "{:<40} <--- File from code regex \n".format(colored(code_line, color='red'))
+                            temp_x = f"{colored(code_line, color='red')} "
+                            temp_x += " <--- File from code regex \n".rjust(150-len(temp_x))
                             code_temp_list.append(temp_x.lstrip(' '))
                             line_searched = True
                     if line_searched:
                         line_searched = False
                         continue
                     for code_word in code_line.split(' '):
-                        if shannon_entropy(code_word, base64char) >= float(4):
-                            temp_x = "{:<40} <--- From code entropy! \n".format(colored(code_word, color='red'))
+                        temp_x = f"{colored(code_word, color='red')} "
+                        temp_x += "<--- From code entropy! \n".rjust(150-len(temp_x))
+                        if shannon_entropy(code_word, base64char) >= float(4.6):
                             code_temp_list.append(temp_x.lstrip(' '))
-                        if shannon_entropy(code_word, hexchar) >= float(3):
-                            temp_x = "{:<40} <--- From code entropy! \n".format(colored(code_word, color='red'))
+                        if shannon_entropy(code_word, hexchar) >= float(4):
                             code_temp_list.append(temp_x.lstrip(' '))
         self.orchestra['code'] = False
         return code_temp_list
@@ -162,18 +164,19 @@ class GithubDork:
                 for commit_line in commit_data:
                     for regex in search_regex:
                         if search(regex, commit_line):
-                            temp_x = "{:<40} <--- File from code regex \n".format(colored(commit_line, color='red'))
+                            temp_x = f"{colored(commit_line, color='red')}" 
+                            temp_x += "<--- File from commit regex \n".rjust(148-len(temp_x))
                             commit_temp_list.append(temp_x.lstrip(' '))
                             line_searched = True
                     if line_searched:
                         line_searched = False
                         continue
                     for commit_word in commit_line.split(' '):
-                        if shannon_entropy(commit_word, base64char) >= float(4):
-                            temp_x = "{:<40} <--- From code entropy! \n".format(colored(commit_word, color='red'))
+                        temp_x = f"{colored(commit_word, color='red')} "
+                        temp_x += "<--- From commit entropy! \n".rjust(148-len(temp_x))
+                        if shannon_entropy(commit_word, base64char) >= float(4.6):
                             code_temp_list.append(temp_x.lstrip(' '))
-                        if shannon_entropy(repo_file_word, hexchar) >= float(3):
-                            temp_x = "{:<40} <--- From code entropy! \n".format(colored(commit_word, color='red'))
+                        if shannon_entropy(commit_word, hexchar) >= float(4.1):
                             code_temp_list.append(temp_x.lstrip(' '))
         self.orchestra['commit'] = False
         return commit_temp_list
