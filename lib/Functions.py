@@ -1,3 +1,4 @@
+from math import log
 from sys import stdin
 from termcolor import colored
 
@@ -33,14 +34,14 @@ def starter(argv):
             print("{} Supply user, repository or domain".format(ColorObj.bad))
             exit()
 
-def write_output(filepath, filename, towrite):
+def write_output_directory(filepath, filename, towrite):
     f = open(FPathApp.slasher(filepath) + filename + ".github", 'a')
     for data in towrite:
         for d in data:
             f.write(d + '\n')
     f.close()
 
-def write_output_directory(filename, towrite):
+def write_output(filename, towrite):
     f = open(filename, 'a')
     for data in towrite:
         for d in data:
@@ -48,12 +49,11 @@ def write_output_directory(filename, towrite):
     f.close()
 
 def shannon_entropy(data, iterator):
-        if not data:
-            return 0
-        entropy = 0
-        for val in iterator:
-            p_x = float(data.count(val))/len(data)
-            if p_x > 0:
-                entropy += - p_x * log(p_x, 2)
-        return float(entropy)
-
+    if not data:
+        return 0
+    entropy = 0
+    for val in iterator:
+        p_x = float(data.count(val))/len(data)
+        if p_x > 0:
+            entropy += - p_x * log(p_x, 2)
+    return float(entropy)

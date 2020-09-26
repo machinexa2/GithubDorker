@@ -1,16 +1,14 @@
 from re import search
-from math import log
-from time import time,sleep
 from requests import get
 from github import Github
+from time import time,sleep
 from base64 import b64decode 
 from bs4 import BeautifulSoup
 from termcolor import colored
 
-from lib.GithubError import InvalidArgument
-from lib.Globals import ColorObj, search_regex
 from lib.Globals import hexchar, base64char
-from lib.Globals import github_access_token, headers
+from lib.Globals import ColorObj, search_regex
+from lib.Globals import github_access_token, Headers
 from lib.Functions import shannon_entropy
 
 class GithubDork:
@@ -40,7 +38,7 @@ class GithubDork:
         elif argv.domain:
             dork_type = argv.domain.split('.')[0] if not argv.full_domain else argv.domain
         else:
-            raise InvalidArgument("{} The argument is either not supplied properly or other error occured".format(ColorObj.bad))
+            assert False, "Error occured"
         for line in input_wordlist:
             print(f"{ColorObj.information} Generating payload for: {colored(line, color='cyan')}")
             git_query = dork_type + " " + line + " " + "in:readme,description,name"
