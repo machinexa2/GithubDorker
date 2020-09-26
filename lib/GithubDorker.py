@@ -1,30 +1,23 @@
-from time import time,sleep
-from math import log
 from re import search
+from math import log
+from time import time,sleep
 from requests import get
 from github import Github
 from base64 import b64decode 
-from os import getenv
-from os import path
 from bs4 import BeautifulSoup
 from termcolor import colored
-from json import load as jload
 
 from lib.GithubError import InvalidArgument
-from lib.Globals import ColorObj
-
-python_dir = path.dirname(path.abspath(__file__))
-with open(python_dir + '/regexes.json') as regex_file:
-        regex_data = jload(regex_file)
-        json_list = [json_items[1] for json_items in regex_data.items()]
+from lib.Globals import ColorObj, search_regex
+from lib.Globals import hexchar, base64char
+from lib.Globals import github_access_token, headers
+from lib.Functions import shannon_entropy
 
 class GithubDork:
     def __init__(self):
-        self.conn = Github(getenv('GITHUB_ACCESS_TOKEN'))
+        self.conn = Github(github_access_token)
         self.query = [] 
         self.orchestra = {'repo': False, 'code': False, 'commit': False}
-        self.hexchar = "1234567890abcdefABCDEF"
-        self.base64char = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
 
     def git_rate_limit(self):
         T = time()
@@ -35,19 +28,9 @@ class GithubDork:
                 death_sleep = 7
             sleep(death_sleep)
         else:
-            return 0
+            return
         sleep(0.2)
-
-    def shannon_entropy(self, data, iterator):
-        if not data:
-            return 0
-        entropy = 0
-        for val in iterator:
-            p_x = float(data.count(val))/len(data)
-            if p_x > 0:
-                entropy += - p_x * log(p_x, 2)
-        return float(entropy)
-    
+        
     def return_query(self, input_wordlist: list, argv) -> list:
         print(f"{ColorObj.information} Generating payloads")
         if argv.repository:
@@ -55,7 +38,6 @@ class GithubDork:
         elif argv.user:
             dork_type = "user:" + argv.user
         elif argv.domain:
-            print("EXECUTED DOMAIN")
             dork_type = argv.domain.split('.')[0] if not argv.full_domain else argv.domain
         else:
             raise InvalidArgument("{} The argument is either not supplied properly or other error occured".format(ColorObj.bad))
@@ -115,7 +97,7 @@ class GithubDork:
                         repo_temp_list.append(temp_x.lstrip(' '))
                         line_searched = False
                         for repo_file_line in repo_file_lines:
-                            for regex in json_list:
+                            for regex in search_regex:
                                 if search(regex, repo_file_line):
                                     temp_x = "{:<40} <--- File from repo regex \n".format(colored(repo_file_line, color='red'))
                                     repo_temp_list.append(temp_x.lstrip(' '))
@@ -124,14 +106,13 @@ class GithubDork:
                                 line_searched = False
                                 continue
                             for repo_file_word in repo_file_line.split(' '):
-                                if self.shannon_entropy(repo_file_word, self.base64char) >= float(4):
+                                if shannon_entropy(repo_file_word, base64char) >= float(4):
                                     temp_x = "{:<40} <--- From Repo entropy! \n".format(colored(repo_file_word, color='red'))
                                     repo_temp_list.append(temp_x.lstrip(' '))
-                                if self.shannon_entropy(repo_file_word, self.hexchar) >= float(3):
+                                if shannon_entropy(repo_file_word, hexchar) >= float(3):
                                     temp_x = "{:<40} <--- From Repo entropy! \n".format(colored(repo_file_word, color='red'))
                                     repo_temp_list.append(temp_x.lstrip(' '))
         self.orchestra['repo'] = False
-        sleep(1)
         return repo_temp_list
 
     def search_code(self, query: str) -> list:
@@ -147,7 +128,7 @@ class GithubDork:
                 code = b64decode(unit_code.content).decode('UTF-8').split('\n')
                 line_searched = False
                 for code_line in code:
-                    for regex in json_list:
+                    for regex in search_regex:
                         if search(regex, code_line):
                             temp_x = "{:<40} <--- File from code regex \n".format(colored(code_line, color='red'))
                             code_temp_list.append(temp_x.lstrip(' '))
@@ -156,14 +137,13 @@ class GithubDork:
                         line_searched = False
                         continue
                     for code_word in code_line.split(' '):
-                        if self.shannon_entropy(code_word, self.base64char) >= float(4):
+                        if shannon_entropy(code_word, base64char) >= float(4):
                             temp_x = "{:<40} <--- From code entropy! \n".format(colored(code_word, color='red'))
                             code_temp_list.append(temp_x.lstrip(' '))
-                        if self.shannon_entropy(code_word, self.hexchar) >= float(3):
+                        if shannon_entropy(code_word, hexchar) >= float(3):
                             temp_x = "{:<40} <--- From code entropy! \n".format(colored(code_word, color='red'))
                             code_temp_list.append(temp_x.lstrip(' '))
         self.orchestra['code'] = False
-        sleep(1)
         return code_temp_list
     
     def search_commit(self, query: str) -> list:
@@ -182,7 +162,7 @@ class GithubDork:
                 commit_data = commit_soup.find_all("span")
                 line_searced = False
                 for commit_line in commit_data:
-                    for regex in json_list:
+                    for regex in search_regex:
                         if search(regex, commit_line):
                             temp_x = "{:<40} <--- File from code regex \n".format(colored(commit_line, color='red'))
                             commit_temp_list.append(temp_x.lstrip(' '))
@@ -191,12 +171,11 @@ class GithubDork:
                         line_searched = False
                         continue
                     for commit_word in commit_line.split(' '):
-                        if self.shannon_entropy(commit_word, self.base64char) >= float(4):
+                        if shannon_entropy(commit_word, base64char) >= float(4):
                             temp_x = "{:<40} <--- From code entropy! \n".format(colored(commit_word, color='red'))
                             code_temp_list.append(temp_x.lstrip(' '))
-                        if self.shannon_entropy(repo_file_word, self.hexchar) >= float(3):
+                        if shannon_entropy(repo_file_word, hexchar) >= float(3):
                             temp_x = "{:<40} <--- From code entropy! \n".format(colored(commit_word, color='red'))
                             code_temp_list.append(temp_x.lstrip(' '))
         self.orchestra['commit'] = False
-        sleep(1)
         return commit_temp_list

@@ -5,19 +5,22 @@ from concurrent.futures import ThreadPoolExecutor
 
 from lib.Globals import ColorObj
 from lib.Functions import starter
+from lib.Functions import write_output, write_output_directory
 from lib.GithubDorker import GithubDork
 from lib.PathFunctions import PathFunction
 
 parser = ArgumentParser(description=colored('Automatic Github Dorker', color='yellow'), epilog=colored("Happy Bug Hunting", color='yellow'))
-group = parser.add_mutually_exclusive_group()
-group_two = parser.add_mutually_exclusive_group()
-group_two.add_argument('---', '---', type=str,dest="stdin", help='Stdin')
-parser.add_argument('-w', '--wordlist', type=str, help='Wordlist')
-parser.add_argument('-oD', '--output-directory', type=str, help='Output directory')
+inputmode_group = parser.add_mutually_exclusive_group()
+output_group = parser.add_mutually_exclusive_group()
+input_group = parser.add_mutually_exclusive_group()
+input_group.add_argument('---', '---', type=str,dest="stdin", help='Stdin')
+input_group.add_argument('-w', '--wordlist', type=str, help='Dorks wordlist')
+output_group.add_argument('-oD', '--output-directory', type=str, help='Output directory')
+output_group.add_argument('-o', '--output', type=str, help='Output directory')
 parser.add_argument('-d', '--domain', type=str, help='Domain name')
 parser.add_argument('-t', '--threads', type=int, help='Number of threads')
-group.add_argument('-r', '--repository', type=str, help='Repository name')
-group.add_argument('-u', '--user', type=str, help='User name')
+inputmode_group.add_argument('-r', '--repository', type=str, help='Repository name')
+inputmode_group.add_argument('-u', '--user', type=str, help='User name')
 parser.add_argument('-f', '--full-domain', action="store_true", help='Use full domain')
 parser.add_argument('-b', '--banner', action="store_true", help="Print banner and exit")
 argv = parser.parse_args()
@@ -25,8 +28,6 @@ argv = parser.parse_args()
 FPathApp = PathFunction()
 GithubApp = GithubDork()
 input_wordlist = starter(argv)
-if argv.output_directory:
-    git_save = open(FPathApp.slasher(argv.output_directory) + argv.domain + ".gitdork", 'a')
 
 def main():
     try:
@@ -40,16 +41,15 @@ def main():
             GithubApp.search_orchestrator(Query)
         except Exception as E:
             print(E,E.__class__)
-        GitRepo = GithubApp.search_repo(Query)
-        GitCode= GithubApp.search_code(Query)
-        GitCommit= GithubApp.search_commit(Query)
+        git_repo = GithubApp.search_repo(Query)
+        git_code= GithubApp.search_code(Query)
+        git_commit= GithubApp.search_commit(Query)
+        git_list = [git_repo, git_code, git_list] #lists list
         if argv.output_directory:
-            for write in GitRepo:
-                git_save.write(write)
-            for write in GitCode:
-                git_save.write(write)
-            for write in GitCommit:
-                git_save.write(write)
+            write_output_directory(argv.output_directory, argv.domain, git_list)
+        if argv.output:
+            write_output(argv.output, git_list)
+
     #with ThreadPoolExecutor(max_workers=argv.threads) as executor:
     #    executor.map(search_all, input_wordlist)
 
