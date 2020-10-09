@@ -13,7 +13,7 @@ input_group = parser.add_mutually_exclusive_group()
 input_mode_group = parser.add_mutually_exclusive_group()
 output_group = parser.add_mutually_exclusive_group()
 
-input_group.add_argument('---', '---', type=str,dest="stdin", help='Stdin')
+input_group.add_argument('---', '---', action="store_true", dest="stdin", help='Stdin')
 input_group.add_argument('-w', '--wordlist', type=str, help='Dorks wordlist')
 output_group.add_argument('-oD', '--output-directory', type=str, help='Output directory')
 output_group.add_argument('-o', '--output', type=str, help='Output directory')

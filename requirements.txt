@@ -1,0 +1,5 @@
+argparse
+termcolor
+bs4
+beautifulsoup4
+PyGithub
