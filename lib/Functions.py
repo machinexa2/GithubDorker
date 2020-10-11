@@ -6,9 +6,9 @@ from lib.Globals import ColorObj
 from lib.PathFunctions import PathFunction
 
 def banner():
-    from pyfiglet import print_figlet as puff
-    puff('Github Dorker', font='larry3d', colors='BLUE')
-    print(colored('Github dorker that searches code, repositories and commit for sensitive data!', color='red', attrs=['bold']))
+    banner = '\x1b[5m\x1b[1m\x1b[40m\x1b[31m   _______ __  __          __       ____             __            \n  / ____(_) /_/ /_  __  __/ /_     / __ \\____  _____/ /_____  _____\n / / __/ / __/ __ \\/ / / / __ \\   / / / / __ \\/ ___/ //_/ _ \\/ ___/\n/ /_/ / / /_/ / / / /_/ / /_/ /  / /_/ / /_/ / /  / ,< /  __/ /    \n\\____/_/\\__/_/ /_/\\__,_/_.___/  /_____/\\____/_/  /_/|_|\\___/_/     \n                                                                   \n\x1b[0m'
+    print(banner)
+    print(colored('Dork code, repository and commit for sensitive data!', color='red', attrs=['bold']))
 
 def starter(argv):
     if argv.banner:

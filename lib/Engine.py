@@ -11,7 +11,7 @@ from lib.Globals import ColorObj, search_regex
 from lib.Globals import github_access_token, Headers
 from lib.Functions import shannon_entropy
 
-class GithubDork:
+class Engine:
     def __init__(self):
         self.conn = Github(github_access_token)
         self.query = [] 
