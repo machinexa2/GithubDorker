@@ -36,10 +36,8 @@ def starter(argv):
 
 def write_output_directory(filepath, filename, towrite):
     path_fn = PathFunctions()
-    f = open(path_fn.slasher(filepath) + filename + ".github", 'a')
-    for data in towrite:
-        for d in data:
-            f.write(d)
+    f = open(path_fn.ender(filepath, '/') + filename + ".github", 'a')
+    [f.write(d) for data in towrite for d in data]
     f.close()
 
 def write_output(filename, towrite):
