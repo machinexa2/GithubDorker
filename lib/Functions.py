@@ -23,11 +23,11 @@ def starter(argv):
                 print("{} Use --help".format(ColorObj.bad))
                 exit()
             else:
-                return [line.rstrip('\n').strip(' ') for line in stdin.read().split('\n') if line]
+                return (line.rstrip('\n').strip(' ') for line in stdin.read().split('\n') if line)
         else:
-            return [argv.domain]
+            return [argv.domain.strip(' ')]
     else:
-        return [line.rstrip('\n').strip(' ') for line in open(argv.wordlist) if line]
+        return (line.rstrip('\n').strip(' ') for line in open(argv.wordlist) if line)
 
     if not argv.user and not argv.repository:
         if not argv.domain:
@@ -35,8 +35,8 @@ def starter(argv):
             exit()
 
 def write_output_directory(filepath, filename, towrite):
-    path_fn = PathFunctions()
-    f = open(path_fn.ender(filepath, '/') + filename + ".github", 'a')
+    PathFunctioner = PathFunctions()
+    f = open(PathFunctioner.ender(filepath, '/') + filename + ".github", 'a')
     [f.write(d) for data in towrite for d in data]
     f.close()
 
