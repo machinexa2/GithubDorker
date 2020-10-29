@@ -2,14 +2,13 @@ from re import search
 from requests import get
 from github import Github
 from time import time,sleep
-from base64 import b64decode 
+from pybase64 import b64decode 
 from bs4 import BeautifulSoup
 from termcolor import colored
 
-from lib.Globals import hexchar, base64char
-from lib.Globals import ColorObj, search_regex
-from lib.Globals import github_access_token, Headers
 from lib.Functions import shannon_entropy
+from lib.Globals import hexchar, base64char, search_regex
+from lib.Globals import github_access_token, Headers, Color
 
 class Engine:
     def __init__(self):
@@ -30,7 +29,7 @@ class Engine:
         sleep(0.2)
         
     def return_query(self, input_wordlist: list, argv) -> list:
-        print(f"{ColorObj.information} Generating payloads")
+        print(f"{Color.information} Generating payloads")
         if argv.repository:
             dork_type = "repo:" + argv.repository
         elif argv.user:
@@ -40,7 +39,7 @@ class Engine:
         else:
             assert False, "Error occured"
         for line in input_wordlist:
-            print(f"{ColorObj.information} Generating payload for: {colored(line, color='cyan')}")
+            print(f"{Color.information} Generating payload for: {colored(line, color='cyan')}")
             git_query = dork_type + " " + line + " " + "in:readme,description,name"
             self.query.append(git_query.lstrip(' '))
         return self.query
@@ -52,34 +51,34 @@ class Engine:
             self.orchestra['repo'] = True
             self.git_rate_limit()
         except Exception as E:
-            print("{} ERROR: {}".format(ColorObj.bad,E))
+            print("{} ERROR: {}".format(Color.bad,E))
         try:
            code_search = self.conn.search_code(query) 
            code_count = code_search.totalCount
            self.orchestra['code'] = True
            self.git_rate_limit()
         except Exception as E:
-            print("{} ERROR: {}".format(ColorObj.bad,E))
+            print("{} ERROR: {}".format(Color.bad,E))
         try:
             commit_search = self.conn.search_commits(query)
             commit_count = code_search.totalCount
             self.orchestra['code'] = True
             self.git_rate_limit()
         except Exception as E:
-            print("{} ERROR: {}".format(ColorObj.bad,E))
+            print("{} ERROR: {}".format(Color.bad,E))
         return self.orchestra 
     
     def search_repo(self, query: str) -> list:
         repo_temp_list = []
         if self.orchestra['repo']:
-            print(f"{ColorObj.information} Searching for data in Repositories!")
+            print(f"{Color.information} Searching for data in Repositories!")
             repo_search = self.conn.search_repositories(query)
             self.git_rate_limit()
             for unit_repo in repo_search:
                 repo = self.conn.get_repo(unit_repo.full_name)
                 temp_x = "Fetching data from this repo: {}\n".format(colored(repo.full_name, color='cyan'))
                 repo_temp_list.append(temp_x.lstrip(' '))
-                print(ColorObj.good + " " + temp_x.rstrip('\n'))
+                print(Color.good + " " + temp_x.rstrip('\n'))
                 repo_list = repo.get_contents("")
                 while repo_list:
                     repo_file = repo_list.pop(0)
@@ -117,11 +116,11 @@ class Engine:
     def search_code(self, query: str) -> list:
         code_temp_list = []
         if self.orchestra['code']:
-            print(f"{ColorObj.information} Searching for data in Codes")
+            print(f"{Color.information} Searching for data in Codes")
             code_search = self.conn.search_code(query) 
             for unit_code in code_search:
                 temp_x = "Name:{}, Repo:{}, URL: {}\n".format(colored(unit_code.name, color='cyan'), colored(unit_code.repository.full_name, color='cyan'), colored(unit_code.download_url, color='cyan'))
-                print("{} Searching for code in {} from repository {}".format(ColorObj.good, colored(unit_code.name, color='cyan'), colored(unit_code.repository.full_name, color='cyan')))
+                print("{} Searching for code in {} from repository {}".format(Color.good, colored(unit_code.name, color='cyan'), colored(unit_code.repository.full_name, color='cyan')))
                 code_temp_list.append(temp_x.lstrip(' '))
                 self.git_rate_limit()
                 code = b64decode(unit_code.content).decode('UTF-8').split('\n')
@@ -149,12 +148,12 @@ class Engine:
     def search_commit(self, query: str) -> list:
         commit_temp_list = []
         if self.orchestra['commit']:
-            print(f"{ColorObj.information} Searching for data in Commits")
+            print(f"{Color.information} Searching for data in Commits")
             commit_search = self.conn.search_commit(query)
             for unit_commit in commit_search:
                 commit_url = unit_commit.html_url
                 temp_x = "Repo:{} Commit:{}\n".format(colored("/".join(commit_url.split('/')[3:5]), color='cyan'), colored(commit_url.split('/')[6:][-1]), color='cyan')
-                print(ColorObj.good + " " + temp_x.rstrip('\n'))
+                print(Color.good + " " + temp_x.rstrip('\n'))
                 commit_temp_list.append(temp_x.lstrip(' '))
                 self.git_rate_limit()
                 commit_response = get(commit_url)

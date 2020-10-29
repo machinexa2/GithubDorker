@@ -2,8 +2,8 @@ from math import log
 from sys import stdin
 from termcolor import colored
 
-from lib.Globals import ColorObj
-from lib.PathFunctions import PathFunction
+from lib.Globals import Color
+from lib.PathFunctions import ender
 
 def banner():
     banner = '\x1b[5m\x1b[1m\x1b[40m\x1b[31m   _______ __  __          __       ____             __            \n  / ____(_) /_/ /_  __  __/ /_     / __ \\____  _____/ /_____  _____\n / / __/ / __/ __ \\/ / / / __ \\   / / / / __ \\/ ___/ //_/ _ \\/ ___/\n/ /_/ / / /_/ / / / /_/ / /_/ /  / /_/ / /_/ / /  / ,< /  __/ /    \n\\____/_/\\__/_/ /_/\\__,_/_.___/  /_____/\\____/_/  /_/|_|\\___/_/     \n                                                                   \n\x1b[0m'
@@ -16,11 +16,11 @@ def starter(argv):
         exit(0)
     if argv.output_directory:
         if not argv.domain:
-            print("{} Output directory used without specifying domain".format(ColorObj.bad))
+            print("{} Output directory used without specifying domain".format(Color.bad))
     if not argv.wordlist:
         if not argv.domain:
             if not argv.stdin:
-                print("{} Use --help".format(ColorObj.bad))
+                print("{} Use --help".format(Color.bad))
                 exit()
             else:
                 return (line.rstrip('\n').strip(' ') for line in stdin.read().split('\n') if line)
@@ -31,12 +31,11 @@ def starter(argv):
 
     if not argv.user and not argv.repository:
         if not argv.domain:
-            print("{} Supply user, repository or domain".format(ColorObj.bad))
+            print("{} Supply user, repository or domain".format(Color.bad))
             exit()
 
 def write_output_directory(filepath, filename, towrite):
-    PathFunctioner = PathFunctions()
-    f = open(PathFunctioner.ender(filepath, '/') + filename + ".github", 'a')
+    f = open(ender(filepath, '/') + filename + ".github", 'a')
     [f.write(d) for data in towrite for d in data]
     f.close()
 

@@ -3,7 +3,7 @@ from argparse import ArgumentParser
 from termcolor import colored
 from concurrent.futures import ThreadPoolExecutor
 
-from lib.Globals import ColorObj
+from lib.Globals import Color
 from lib.Functions import starter
 from lib.Functions import write_output, write_output_directory
 from lib.Engine import Engine
@@ -32,10 +32,10 @@ def main():
     try:
         GitQueries = engine.return_query(input_wordlist, argv)
     except Exception as E:
-        print(f"{ColorObj.bad} Error: {E},{E.__class__} Exiting!")
+        print(f"{Color.bad} Error: {E},{E.__class__} Exiting!")
         exit()
     for Query in GitQueries:
-        print("{} Dorking Github using: {}".format(ColorObj.information, colored(Query, color='cyan')))
+        print("{} Dorking Github using: {}".format(Color.information, colored(Query, color='cyan')))
         try:
             engine.search_orchestrator(Query)
         except Exception as E:
